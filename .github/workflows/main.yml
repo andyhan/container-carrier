@@ -42,23 +42,23 @@ jobs:
             image: moby/buildkit
             multi-arch: system
           - name: maven
-            image: library/maven
+            image: maven
             repo: docker.io
             multi-arch: all
           - name: eclipse-temurin
-            image: library/eclipse-temurin
+            image: eclipse-temurin
             repo: docker.io
             multi-arch: all
           - name: golang
-            image: library/golang
+            image: golang
             repo: docker.io
             multi-arch: all
           - name: node
-            image: library/node
+            image: node
             repo: docker.io
             multi-arch: all
           - name: nginx
-            image: library/nginx
+            image: nginx
             repo: docker.io
             multi-arch: all
           - name: docker-buildx
