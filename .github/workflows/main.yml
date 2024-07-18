@@ -1,0 +1,83 @@
+name: Mirror DockerHub
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * 1-5"
+    
+jobs:
+  mirror:
+    name: Mirror
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: moby/buildkit
+            repo: docker.io
+            multi-arch: all
+          - image: busybox
+            repo: docker.io
+          - image: debian
+            repo: docker.io
+          - image: golang
+            repo: docker.io
+          - image: mysql
+            repo: docker.io
+          - image: node
+            repo: docker.io
+          - image: openjdk
+            repo: docker.io
+          - image: postgres
+            repo: docker.io
+          - image: python
+            repo: docker.io
+          - image: rust
+            repo: docker.io
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - uses: actions/checkout@v4
+      - name: 'Set up skopeo'
+        uses: warjiang/setup-skopeo@latest
+        with:
+          version: latest
+          
+      - name: Log in to Docker Hub
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_USERNAME }}          
+      
+      - name: Log in to My Gitea
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.GITEA_SERVER }}
+          username: ${{ env.GITEA_USERNAME }}
+          password: ${{ env.GITEA_ACCESS_TOKEN }}
+          
+      # - name: Login to GitHub Container Registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ghcr.io
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+          
+      # - name: Log in to Quay.io
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: quay.io
+      #     username: ${{ secrets.QUAY_USERNAME }}
+      #     password: ${{ secrets.QUAY_TOKEN }}
+          
+      - name: 'Skopeo copy images'
+        run: |
+          skopeo --version
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-8 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-8
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-11 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-11
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-17 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-17
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-21 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-21
+        
