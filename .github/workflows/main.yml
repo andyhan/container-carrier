@@ -61,6 +61,10 @@ jobs:
             image: library/nginx
             repo: docker.io
             multi-arch: all
+          - name: docker-buildx
+            image: woodpecker-plugins/docker-buildx
+            repo: codeberg.org
+            multi-arch: system
             
     steps:
       - uses: actions/checkout@v4
@@ -86,13 +90,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
-      # - name: Log in to Quay.io
-      #   uses: redhat-actions/podman-login@v1
-      #   with:
-      #     registry: quay.io
-      #     username: ${{ secrets.QUAY_USERNAME }}
-      #     password: ${{ secrets.QUAY_TOKEN }}
-
       - name: Set up skopeo environment         
         uses: balena-io-experimental/setup-skopeo-action@main
         # uses: warjiang/setup-skopeo@v0.1.3   
@@ -107,8 +104,6 @@ jobs:
               docker://${{ matrix.repo }}/${{ matrix.image }}:$tag \
               docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/${{ matrix.image }}:$tag
           done
-          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-8 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-8
-          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-11 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-11
-          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-17 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-17
-          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-21 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-21
+          # skopeo copy --multi-arch all docker://codeberg.org/woodpecker-plugins/docker-buildx:4 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/plugin-docker-buildx:4
+          # skopeo copy --multi-arch all docker://codeberg.org/woodpecker-plugins/docker-buildx:latest docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/plugin-docker-buildx:latest
         
