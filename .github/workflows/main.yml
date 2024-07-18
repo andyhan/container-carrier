@@ -1,43 +1,67 @@
 name: Mirror DockerHub
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: "0 2 * * 1-5"
+  workflow_dispatch:
+    # inputs:
+    #   IMAGE_NAME:
+    #     description: '原镜像名称'
+    #     required: true
+    #     default: 'mysql/mysql-server'
+    #   NEW_NAME:
+    #     description: '同步后镜像名称'
+    #     required: true
+    #     default: 'mysql-server'
+    #   IMAGE_VERSION:
+    #     description: '镜像版本'
+    #     required: true
+    #     default: 'latest'
+    #   TARGET_REGISTRY:
+    #     description: '仓库地址'
+    #     required: true
+    #     default: 'registry.cn-hangzhou.aliyuncs.com'
+    #   TARGET_REPOSITORY:
+    #     description: '空间名称'
+    #     required: true
+    #     default: 'dockerhub_mirror'
     
 jobs:
   mirror:
     name: Mirror
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      # matrix:
-      #   include:
-      #     - image: moby/buildkit
-      #       repo: docker.io
-      #       multi-arch: all
-      #     - image: busybox
-      #       repo: docker.io
-      #     - image: debian
-      #       repo: docker.io
-      #     - image: golang
-      #       repo: docker.io
-      #     - image: mysql
-      #       repo: docker.io
-      #     - image: node
-      #       repo: docker.io
-      #     - image: openjdk
-      #       repo: docker.io
-      #     - image: postgres
-      #       repo: docker.io
-      #     - image: python
-      #       repo: docker.io
-      #     - image: rust
-      #       repo: docker.io
     permissions:
       contents: read
       packages: write
-      
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: buildkit
+            repo: docker.io
+            image: moby/buildkit
+            multi-arch: system
+          - name: maven
+            image: library/maven
+            repo: docker.io
+            multi-arch: all
+          - name: eclipse-temurin
+            image: library/eclipse-temurin
+            repo: docker.io
+            multi-arch: all
+          - name: golang
+            image: library/golang
+            repo: docker.io
+            multi-arch: all
+          - name: node
+            image: library/node
+            repo: docker.io
+            multi-arch: all
+          - name: nginx
+            image: library/nginx
+            repo: docker.io
+            multi-arch: all
+            
     steps:
       - uses: actions/checkout@v4
           
@@ -75,11 +99,16 @@ jobs:
         with:
           version: latest
           
-      - name: 'Skopeo copy images'
+      - name: 'Skopeo copy images to My Gitea'
         run: |
           skopeo --version
-          skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-8 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-8
-          skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-11 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-11
-          skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-17 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-17
-          skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-21 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-21
+          for tag in $(cat ./images/${{ matrix.name }}); do
+            skopeo copy --multi-arch ${{ matrix.multi-arch || 'system' }}  \
+              docker://${{ matrix.repo }}/${{ matrix.image }}:$tag \
+              docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/${{ matrix.image }}:$tag
+          done
+          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-8 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-8
+          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-11 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-11
+          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-17 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-17
+          # skopeo copy --multi-arch all docker://docker.io/maven:3-eclipse-temurin-21 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-21
         
