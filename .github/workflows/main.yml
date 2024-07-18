@@ -77,8 +77,8 @@ jobs:
       - name: 'Skopeo copy images'
         run: |
           skopeo --version
-          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-8 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-8
-          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-11 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-11
-          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-17 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-17
-          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-21 docker://${{ env.GITEA_SERVER }}/${{  env.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-21
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-8 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-8
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-11 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-11
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-17 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-17
+          skopeo copy --all docker://docker.io/maven:3-eclipse-temurin-21 docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/maven:3-eclipse-temurin-21
         
