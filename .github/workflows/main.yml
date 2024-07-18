@@ -11,29 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - image: moby/buildkit
-            repo: docker.io
-            multi-arch: all
-          - image: busybox
-            repo: docker.io
-          - image: debian
-            repo: docker.io
-          - image: golang
-            repo: docker.io
-          - image: mysql
-            repo: docker.io
-          - image: node
-            repo: docker.io
-          - image: openjdk
-            repo: docker.io
-          - image: postgres
-            repo: docker.io
-          - image: python
-            repo: docker.io
-          - image: rust
-            repo: docker.io
+      # matrix:
+      #   include:
+      #     - image: moby/buildkit
+      #       repo: docker.io
+      #       multi-arch: all
+      #     - image: busybox
+      #       repo: docker.io
+      #     - image: debian
+      #       repo: docker.io
+      #     - image: golang
+      #       repo: docker.io
+      #     - image: mysql
+      #       repo: docker.io
+      #     - image: node
+      #       repo: docker.io
+      #     - image: openjdk
+      #       repo: docker.io
+      #     - image: postgres
+      #       repo: docker.io
+      #     - image: python
+      #       repo: docker.io
+      #     - image: rust
+      #       repo: docker.io
     permissions:
       contents: read
       packages: write
