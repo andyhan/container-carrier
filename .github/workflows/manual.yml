@@ -8,23 +8,23 @@ on:
         required: true
         default: 'docker.io'
       IMAGE_FULL_AME:
-        description: 'Source Image Full Name with Repository and Tag'
+        description: 'Source Image Full Name Tag'
         required: true
         default: ''
       TARGET_REGISTRY:
         description: 'Target Container Registry'
         required: true
-        default: ${{ secrets.GITEA_SERVER }}
+        default: ''
       TARGET_REPOSITORY:
         description: 'Container Repository for Target Container Registry'
         required: true
-        default: ${{ secrets.GITEA_REPOSITORY }}
+        default: ''
       TARGET_FULL_IMAGE_NAME:
         description: 'Target Full Image Name with Tag'
         required: true
-        default: ${{ github.event.inputs.IMAGE_FULL_AME }}
+        default: ''
       MULTI_ARCH:
-        description: 'Multi-Arch support for Skopoe copy cli ( system / all )'
+        description: 'Multi-Arch support for Skopoe copy cli'
         required: true
         default: 'system'
 
