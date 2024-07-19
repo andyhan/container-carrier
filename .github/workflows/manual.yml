@@ -29,8 +29,8 @@ on:
         default: 'system'
 
 jobs:
-  mirror:
-    name: Mirror
+  skopeo-copy:
+    name: Copy Image
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -68,7 +68,7 @@ jobs:
       - name: 'Skopeo copy images to Target Container '
         run: |
           skopeo --version
-          skopeo copy --multi-arch ${{ matrix.multi-arch || 'system' }} \
+          skopeo copy --multi-arch ${{ github.event.inputs.MULTI_ARCH || 'system' }} \
             docker://${{ github.event.inputs.SOURCE_REGISTRY }}/${{ github.event.inputs.IMAGE_FULL_AME }} \
             docker://${{ github.event.inputs.TARGET_REGISTRY }}/${{ github.event.inputs.TARGET_REPOSITORY }}/${{ github.event.inputs.TARGET_FULL_IMAGE_NAME }}
             
