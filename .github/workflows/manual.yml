@@ -1,0 +1,74 @@
+name: Copy Image From DockerHub to Somewhere Manually
+
+on:
+  workflow_dispatch:
+    inputs:
+      SOURCE_REGISTRY:
+        description: 'Source Container Registry'
+        required: true
+        default: 'docker.io'
+      IMAGE_FULL_AME:
+        description: 'Source Image Full Name with Repository and Tag'
+        required: true
+        default: ''
+      TARGET_REGISTRY:
+        description: 'Target Container Registry'
+        required: true
+        default: ${{ secrets.GITEA_SERVER }}
+      TARGET_REPOSITORY:
+        description: 'Container Repository for Target Container Registry'
+        required: true
+        default: ${{ secrets.GITEA_REPOSITORY }}
+      TARGET_FULL_IMAGE_NAME:
+        description: 'Target Full Image Name with Tag'
+        required: true
+        default: ${{ github.event.inputs.IMAGE_FULL_AME }}
+      MULTI_ARCH:
+        description: 'Multi-Arch support for Skopoe copy cli ( system / all )'
+        required: true
+        default: 'system'
+
+jobs:
+  mirror:
+    name: Mirror
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+      
+      - name: Log in to My Gitea
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.GITEA_SERVER }}
+          username: ${{ secrets.GITEA_USERNAME }}
+          password: ${{ secrets.GITEA_ACCESS_TOKEN }}
+          
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up skopeo environment         
+        uses: balena-io-experimental/setup-skopeo-action@main
+        # uses: warjiang/setup-skopeo@v0.1.3   
+        with:
+          version: latest
+          
+      - name: 'Skopeo copy images to Target Container '
+        run: |
+          skopeo --version
+          skopeo copy --multi-arch ${{ matrix.multi-arch || 'system' }} \
+            docker://${{ github.event.inputs.SOURCE_REGISTRY }}/${{ github.event.inputs.IMAGE_FULL_AME }} \
+            docker://${{ github.event.inputs.TARGET_REGISTRY }}/${{ github.event.inputs.TARGET_REPOSITORY }}/${{ github.event.inputs.TARGET_FULL_IMAGE_NAME }}
+            
