@@ -2,7 +2,7 @@ name: Mirror DockerHub
 
 on:
   schedule:
-    - cron: '0 0 * * 1,3,5'
+    - cron: '0 0 1,15 * *'
   workflow_dispatch:
   
 jobs:
@@ -23,7 +23,7 @@ jobs:
           - name: maven
             image: maven
             repo: docker.io
-            multi-arch: all
+            multi-arch: system
           - name: eclipse-temurin
             image: eclipse-temurin
             repo: docker.io
@@ -31,7 +31,7 @@ jobs:
           - name: golang
             image: golang
             repo: docker.io
-            multi-arch: all
+            multi-arch: system
           - name: node
             image: node
             repo: docker.io
