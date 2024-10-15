@@ -82,6 +82,6 @@ jobs:
           for tag in $(cat ./images/${{ matrix.name }}); do
             skopeo copy --multi-arch ${{ matrix.multi-arch || 'system' }}  \
               docker://${{ matrix.repo }}/${{ matrix.image }}:$tag \
-              docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/${{ matirx.dest-image || matrix.image }}:$tag
+              docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/${{ matrix.dest-image || matrix.image }}:$tag
           done
           
