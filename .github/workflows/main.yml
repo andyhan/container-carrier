@@ -45,7 +45,11 @@ jobs:
             repo: codeberg.org
             dest-image: plugin-docker-buildx
             multi-arch: system
-            
+          - name: plugin-sonarqube-scanner
+            repo: docker.io
+            image: plugins/sonarqube-scanner
+            dest-image: woodpecker-plugins/sonarqube-scanner
+            multi-arch: system
     steps:
       - uses: actions/checkout@v4
           
