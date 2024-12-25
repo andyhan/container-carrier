@@ -28,7 +28,7 @@ on:
         type: choice
         required: true
         options:
-          - 'all  '
+          - 'all'
           - 'system'
         default: 'system'
 

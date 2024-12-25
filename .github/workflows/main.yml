@@ -4,7 +4,22 @@ on:
   schedule:
     - cron: '0 0 1,15 * *'
   workflow_dispatch:
-  
+    inputs:
+      IMAGE_NAME:
+        description: 'The name of Image to be Mirrored'
+        type: choice
+        options:
+          - ''
+          - 'buildkit'
+          - 'maven'
+          - 'eclipse-temurin'
+          - 'golang'
+          - 'node'
+          - 'nginx'
+          - 'plugin-docker-buildx'
+          - 'plugin-sonarqube-scanner'
+        default: ''
+        
 jobs:
   mirror:
     name: Mirror
@@ -76,11 +91,12 @@ jobs:
           
       - name: Set up skopeo environment         
         uses: balena-io-experimental/setup-skopeo-action@main
-        # uses: warjiang/setup-skopeo@v0.1.3   
+        # uses: warjiang/setup-skopeo@v0.1.3
         with:
           version: latest
           
       - name: 'Skopeo copy images to My Gitea'
+        if: ${{ github.event.inputs.IMAGE_NAME == '' || github.event.inputs.IMAGE_NAME == matrix.name }}
         run: |
           skopeo --version
           for tag in $(cat ./images/${{ matrix.name }}); do
