@@ -50,6 +50,11 @@ jobs:
             image: plugins/sonarqube-scanner
             dest-image: woodpecker-plugins/sonarqube-scanner
             multi-arch: system
+          - name: plugin-dependency-check
+            repo: docker.io
+            image: owasp/dependency-check
+            dest-image: woodpecker-plugins/dependency-check
+            multi-arch: system
     steps:
       - uses: actions/checkout@v4
           
