@@ -16,9 +16,11 @@ on:
           - 'maven'
           - 'nginx'
           - 'node'
+          - 'dotnet-sdk'
           - 'plugin-dependency-check'
           - 'plugin-docker-buildx'
           - 'plugin-sonarqube-scanner'
+          - 'plugin-woodpecker-rsync'
         default: ''
         
 jobs:
@@ -56,6 +58,11 @@ jobs:
             image: nginx
             repo: docker.io
             multi-arch: all
+          - name: dotnet-sdk
+            repo: mcr.microsoft.com
+            image: dotnet/sdk
+            dest-image: dotnet/sdk
+            multi-arch: system
           - name: plugin-docker-buildx
             image: woodpecker-plugins/docker-buildx
             repo: codeberg.org
@@ -70,6 +77,11 @@ jobs:
             repo: docker.io
             image: owasp/dependency-check
             dest-image: woodpecker-plugins/dependency-check
+            multi-arch: system
+          - name: plugin-woodpecker-rsync
+            repo: docker.io
+            image: misotolar/woodpecker-rsync
+            dest-image: woodpecker-plugins/woodpecker-rsync
             multi-arch: system
     steps:
       - uses: actions/checkout@v4
