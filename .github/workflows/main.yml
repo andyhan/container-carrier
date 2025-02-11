@@ -18,6 +18,7 @@ on:
           - 'node'
           - 'plugin-dependency-check'
           - 'plugin-docker-buildx'
+          - 'plugin-node-pm'
           - 'plugin-sonarqube-scanner'
         default: ''
         
@@ -60,6 +61,11 @@ jobs:
             image: woodpecker-plugins/docker-buildx
             repo: codeberg.org
             dest-image: plugin-docker-buildx
+            multi-arch: system
+          - name: plugin-node-pm
+            image: woodpecker-plugins/node-pm
+            repo: codeberg.org
+            dest-image: woodpecker-plugins/node-pm
             multi-arch: system
           - name: plugin-sonarqube-scanner
             repo: docker.io
