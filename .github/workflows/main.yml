@@ -18,8 +18,12 @@ on:
           - 'node'
           - 'plugin-dependency-check'
           - 'plugin-docker-buildx'
+          - 'plugin-dockle'
+          - 'plugin-extend-env'
+          - 'plugin-kaniko'
           - 'plugin-node-pm'
           - 'plugin-sonarqube-scanner'
+          - 'plugin-trivy'
         default: ''
         
 jobs:
@@ -38,44 +42,64 @@ jobs:
             image: moby/buildkit
             multi-arch: system
           - name: maven
-            image: maven
             repo: docker.io
+            image: maven
             multi-arch: system
           - name: eclipse-temurin
-            image: eclipse-temurin
             repo: docker.io
+            image: eclipse-temurin
             multi-arch: all
           - name: golang
-            image: golang
             repo: docker.io
+            image: golang
             multi-arch: system
           - name: node
-            image: node
             repo: docker.io
+            image: node
             multi-arch: all
           - name: nginx
-            image: nginx
             repo: docker.io
+            image: nginx
             multi-arch: all
           - name: plugin-docker-buildx
-            image: woodpecker-plugins/docker-buildx
             repo: codeberg.org
-            dest-image: plugin-docker-buildx
+            image: woodpecker-plugins/docker-buildx
+            dest-image: woodpecker-plugins/plugin-docker-buildx
+            multi-arch: system
+          - name: plugin-dockle
+            repo: docker.io
+            image: euryecetelecom/woodpeckerci-dockle
+            dest-image: woodpecker-plugins/plugin-dockle
+            multi-arch: system
+          - name: plugin-extend-env
+            repo: docker.io
+            image: woodpeckerci/plugin-extend-env
+            dest-image: woodpecker-plugins/plugin-extend-env
+            multi-arch: system
+          - name: plugin-kaniko
+            repo: docker.io
+            image: woodpeckerci/plugin-kaniko
+            dest-image: woodpecker-plugins/plugin-kaniko
             multi-arch: system
           - name: plugin-node-pm
-            image: woodpecker-plugins/node-pm
             repo: codeberg.org
-            dest-image: woodpecker-plugins/node-pm
+            image: woodpecker-plugins/node-pm
+            dest-image: woodpecker-plugins/plugin-node-pm
             multi-arch: system
           - name: plugin-sonarqube-scanner
             repo: docker.io
             image: plugins/sonarqube-scanner
-            dest-image: woodpecker-plugins/sonarqube-scanner
+            dest-image: woodpecker-plugins/plugin-sonarqube-scanner
             multi-arch: system
           - name: plugin-dependency-check
             repo: docker.io
             image: owasp/dependency-check
-            dest-image: woodpecker-plugins/dependency-check
+            dest-image: woodpecker-plugins/plugin-dependency-check
+            multi-arch: system
+          - name: plugin-trivy
+            repo: codeberg.org
+            image: woodpecker-plugins/trivy
+            dest-image: woodpecker-plugins/plugin-trivy
             multi-arch: system
     steps:
       - uses: actions/checkout@v4
