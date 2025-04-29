@@ -16,6 +16,7 @@ on:
           - 'maven'
           - 'nginx'
           - 'node'
+          - 'dotnet-sdk'
           - 'plugin-dependency-check'
           - 'plugin-docker-buildx'
           - 'plugin-dockle'
@@ -23,6 +24,7 @@ on:
           - 'plugin-kaniko'
           - 'plugin-node-pm'
           - 'plugin-sonarqube-scanner'
+          - 'plugin-woodpecker-rsync'
           - 'plugin-trivy'
         default: ''
         
@@ -61,6 +63,11 @@ jobs:
             repo: docker.io
             image: nginx
             multi-arch: all
+          - name: dotnet-sdk
+            repo: mcr.microsoft.com
+            image: dotnet/sdk
+            dest-image: dotnet/sdk
+            multi-arch: system
           - name: plugin-docker-buildx
             repo: codeberg.org
             image: woodpecker-plugins/docker-buildx
@@ -100,6 +107,11 @@ jobs:
             repo: codeberg.org
             image: woodpecker-plugins/trivy
             dest-image: woodpecker-plugins/plugin-trivy
+            multi-arch: system
+          - name: plugin-woodpecker-rsync
+            repo: docker.io
+            image: misotolar/woodpecker-rsync
+            dest-image: woodpecker-plugins/plugin-rsync
             multi-arch: system
     steps:
       - uses: actions/checkout@v4
