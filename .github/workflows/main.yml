@@ -25,6 +25,7 @@ on:
           - 'plugin-node-pm'
           - 'plugin-sonarqube-scanner'
           - 'plugin-woodpecker-rsync'
+          - 'plugin-drone-rsync'
           - 'plugin-trivy'
         default: ''
         
@@ -112,6 +113,11 @@ jobs:
             repo: docker.io
             image: misotolar/woodpecker-rsync
             dest-image: woodpecker-plugins/plugin-rsync
+            multi-arch: system
+          - name: plugin-drone-rsync
+            repo: docker.io
+            image: drillster/drone-rsync
+            dest-image: woodpecker-plugins/plugin-drone-rsync
             multi-arch: system
     steps:
       - uses: actions/checkout@v4
