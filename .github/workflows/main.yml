@@ -2,7 +2,7 @@ name: Mirror DockerHub
 
 on:
   schedule:
-    - cron: '0 0 10,20,30 * *'
+    - cron: '0 0 15 * *'
   workflow_dispatch:
     inputs:
       IMAGE_NAME:
