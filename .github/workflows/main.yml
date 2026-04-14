@@ -2,8 +2,7 @@ name: Mirror DockerHub
 
 on:
   schedule:
-    - cron: '0 22 */12,*/13,*/14,*/15,*/16,*/17,*/18 * 7'
-  workflow_dispatch:
+    - cron: '0 20 */12,*/13,*/14,*/15,*/16,*/17,*/18 * 0'
     inputs:
       IMAGE_NAME:
         description: 'The name of Image to be Mirrored'
