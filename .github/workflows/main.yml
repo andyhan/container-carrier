@@ -150,6 +150,8 @@ jobs:
         run: |
           install -D -m 755 ./skopeo "$HOME/.local/skopeo-bin/skopeo"
           echo "$HOME/.local/skopeo-bin" >> "$GITHUB_PATH"
+          echo 'unqualified-search-registries = ["docker.io"]' \
+            | sudo tee /etc/containers/registries.conf
 
       - name: 'Skopeo copy images to My Gitea'
         if: ${{ github.event.inputs.IMAGE_NAME == '' || github.event.inputs.IMAGE_NAME == matrix.name }}
