@@ -11,22 +11,33 @@ on:
         options:
           - ''
           - 'buildkit'
+          - 'maven'
           - 'eclipse-temurin'
           - 'golang'
-          - 'maven'
-          - 'nginx'
           - 'node'
+          - 'nginx'
           - 'dotnet-sdk'
-          - 'plugin-dependency-check'
           - 'plugin-docker-buildx'
           - 'plugin-dockle'
           - 'plugin-extend-env'
           - 'plugin-kaniko'
           - 'plugin-node-pm'
           - 'plugin-sonarqube-scanner'
+          - 'plugin-dependency-check'
+          - 'plugin-trivy'
           - 'plugin-woodpecker-rsync'
           - 'plugin-drone-rsync'
-          - 'plugin-trivy'
+        default: ''
+      MULTI_ARCH:
+        description: 'Control what is copied if source-image refers to a multi-architecture image.'
+        type: choice
+        options:
+          - ''
+          - 'system'
+          - 'all'
+          - 'linux/amd64'
+          - 'linux/arm64'
+          - 'linux/amd64,linux/arm64'
         default: ''
 
 env:      
@@ -124,7 +135,7 @@ jobs:
             dest-image: woodpecker-plugins/plugin-drone-rsync
             multi-arch: system
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         if: ${{ github.event.inputs.IMAGE_NAME == '' || github.event.inputs.IMAGE_NAME == matrix.name }}
 
       - name: Log in to Docker Hub
@@ -170,7 +181,7 @@ jobs:
         run: |
           skopeo --version
           for tag in $(cat ./images/${{ matrix.name }}); do
-            skopeo copy --multi-arch ${{ matrix.multi-arch || 'system' }}  \
+            skopeo copy --multi-arch ${{ github.event.inputs.MULTI_ARCH || matrix.multi-arch || 'system' }}  \
               docker://${{ matrix.repo }}/${{ matrix.image }}:$tag \
               docker://${{ secrets.GITEA_SERVER }}/${{ secrets.GITEA_REPOSITORY }}/${{ matrix.dest-image || matrix.image }}:$tag
           done
